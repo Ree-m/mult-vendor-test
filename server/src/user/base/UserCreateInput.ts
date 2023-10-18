@@ -11,7 +11,16 @@ https://docs.amplication.com/how-to/custom-code
   */
 import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, IsOptional } from "class-validator";
+import {
+  IsString,
+  IsOptional,
+  IsBoolean,
+  ValidateNested,
+} from "class-validator";
+import { OrderCreateNestedManyWithoutUsersInput } from "./OrderCreateNestedManyWithoutUsersInput";
+import { Type } from "class-transformer";
+import { ProductWhereUniqueInput } from "../../product/base/ProductWhereUniqueInput";
+import { ReviewCreateNestedManyWithoutUsersInput } from "./ReviewCreateNestedManyWithoutUsersInput";
 import { IsJSONValue } from "@app/custom-validators";
 import { GraphQLJSON } from "graphql-type-json";
 import { InputJsonValue } from "../../types";
@@ -31,6 +40,17 @@ class UserCreateInput {
 
   @ApiProperty({
     required: false,
+    type: Boolean,
+  })
+  @IsBoolean()
+  @IsOptional()
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  isAdmin?: boolean | null;
+
+  @ApiProperty({
+    required: false,
     type: String,
   })
   @IsString()
@@ -41,12 +61,48 @@ class UserCreateInput {
   lastName?: string | null;
 
   @ApiProperty({
+    required: false,
+    type: () => OrderCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => OrderCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => OrderCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  orders?: OrderCreateNestedManyWithoutUsersInput;
+
+  @ApiProperty({
     required: true,
     type: String,
   })
   @IsString()
   @Field(() => String)
   password!: string;
+
+  @ApiProperty({
+    required: false,
+    type: () => ProductWhereUniqueInput,
+  })
+  @ValidateNested()
+  @Type(() => ProductWhereUniqueInput)
+  @IsOptional()
+  @Field(() => ProductWhereUniqueInput, {
+    nullable: true,
+  })
+  product?: ProductWhereUniqueInput | null;
+
+  @ApiProperty({
+    required: false,
+    type: () => ReviewCreateNestedManyWithoutUsersInput,
+  })
+  @ValidateNested()
+  @Type(() => ReviewCreateNestedManyWithoutUsersInput)
+  @IsOptional()
+  @Field(() => ReviewCreateNestedManyWithoutUsersInput, {
+    nullable: true,
+  })
+  reviews?: ReviewCreateNestedManyWithoutUsersInput;
 
   @ApiProperty({
     required: true,
